@@ -4,7 +4,9 @@ import okhttp3.Response
 
 class XmlEpgFetcher : EpgFetcher {
     override fun isSupport(url: String): Boolean {
-        return url.endsWith(".xml")
+        // 提取URL路径部分，不包含查询参数和片段
+        val path = url.substringBefore('?').substringBefore('#')
+        return path.endsWith(".xml")
     }
 
     override fun fetch(response: Response): String {

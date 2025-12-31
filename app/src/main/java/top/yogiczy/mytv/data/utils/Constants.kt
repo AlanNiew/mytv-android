@@ -12,22 +12,22 @@ object Constants {
     /**
      * 应用 代码仓库
      */
-    const val APP_REPO = "https://github.com/yaoxieyoulei/mytv-android"
+    const val APP_REPO = "https://gitee.com/southwind9984/android-tv"
 
     /**
      * IPTV源地址
      */
-    const val IPTV_SOURCE_URL = "http://1.2.3.4/live.m3u"
+    const val IPTV_SOURCE_URL = "http://60.204.147.98:15002/api/live.m3u8"
 
     /**
      * IPTV源缓存时间（毫秒）
      */
-    const val IPTV_SOURCE_CACHE_TIME = 1000 * 60 * 60 * 24L // 24小时
+    const val IPTV_SOURCE_CACHE_TIME = 1000 * 60 * 60 * 2L // 2小时
 
     /**
      * 节目单XML地址
      */
-    const val EPG_XML_URL = "http://epg.51zmt.top:8000/e.xml.gz"
+    const val EPG_XML_URL = "http://60.204.147.98:15002/api/live.xml.gz"
 
     /**
      * 节目单刷新时间阈值（小时）
@@ -38,7 +38,7 @@ object Constants {
      * Git最新版本信息
      */
     const val GIT_RELEASE_LATEST_URL =
-        "https://api.github.com/repos/yaoxieyoulei/mytv-android/releases/latest"
+        "https://gitee.com/api/v5/repos/southwind9984/android-tv/releases/latest"
 
     /**
      * GitHub加速代理地址
