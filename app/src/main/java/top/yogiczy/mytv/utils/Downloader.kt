@@ -1,11 +1,9 @@
 package top.yogiczy.mytv.utils
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
-import okhttp3.OkHttpClient
+import top.yogiczy.mytv.data.OkHttpClientProvider
 import okio.BufferedSource
 import okio.ForwardingSource
 import okio.buffer
@@ -22,7 +20,8 @@ object Downloader : Loggable() {
                     .body(DownloadResponseBody(originalResponse, onProgressCb)).build()
             }
 
-            val client = OkHttpClient.Builder().addNetworkInterceptor(interceptor).build()
+            val client = OkHttpClientProvider.client.newBuilder()
+                .addNetworkInterceptor(interceptor).build()
             val request = okhttp3.Request.Builder().url(url).build()
 
             try {
@@ -56,9 +55,7 @@ object Downloader : Loggable() {
                     val bytesRead = super.read(sink, byteCount)
                     totalBytesRead += if (bytesRead != -1L) bytesRead else 0
                     val progress = (totalBytesRead * 100 / contentLength()).toInt()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        onProgressCb?.invoke(progress)
-                    }
+                    onProgressCb?.invoke(progress)
                     return bytesRead
                 }
             }.buffer()
