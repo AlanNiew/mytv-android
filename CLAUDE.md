@@ -22,14 +22,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ./gradlew installDebug
 ```
 
-### 代码检查和格式化
+### 代码检查和测试
 ```bash
-# 检查代码风格
-./gradlew ktlintCheck
+# Lint 检查(Android 自带 lint,无 ktlint 插件)
+./gradlew lintDebug
 
-# 自动格式化代码
-./gradlew ktlintFormat
+# 单元测试(在 JVM 上运行,不需要真机/模拟器)
+./gradlew testDebugUnitTest
 ```
+
+> 代码风格以根目录 `.editorconfig` 为准(4 空格缩进、LF、UTF-8)。
+> 本项目未集成 ktlint 插件,`ktlintCheck` / `ktlintFormat` 任务不存在。
+> CI(`.github/workflows/check.yml`)会执行 `testDebugUnitTest`、`lintDebug`、`assembleDebug`。
 
 ### 打包发布版本
 ```bash
@@ -177,12 +181,12 @@ app/src/main/java/top/yogiczy/mytv/
 
 ## 版本信息
 
-- **当前版本**: 1.4.4
+- **当前版本**: 由 git tag(`v*.*.*`)控制,见 `release.yml` 工作流;`defaultConfig` 中的 `versionName` 仅为占位符
 - **编译 SDK**: 34 (Android 14)
 - **目标 SDK**: 34
 - **最低 SDK**: 21 (Android 5.0)
-- **Gradle 版本**: 8.7
-- **Kotlin 版本**: 根据版本目录确定
+- **Gradle 版本**: 由 wrapper(`gradle/wrapper/gradle-wrapper.properties`)确定
+- **Kotlin 版本**: 2.0.0(见 `gradle/libs.versions.toml`)
 
 ## 重要提醒
 
