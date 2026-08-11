@@ -19,7 +19,6 @@ import java.io.StringReader
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import java.util.TimeZone
 
 /**
  * 节目单获取
@@ -60,33 +59,13 @@ class EpgRepository : FileCacheRepository("epg.json") {
                         parser.nextTag()
                         val title = parser.nextText()
 
-                        fun parseTime(time: String): Long {
-                            if (time.length < 14) return 0
-    
-                            return try {
-                                // 处理 "20251230124000 +0800" 格式
-                                val dateTimePart = time.substring(0, 14)  // "20251230124000"
-                                val timezonePart = time.substring(14).trim()  // "+0800"
-                                
-                                val sdf = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
-                                // 设置时区偏移
-                                if (timezonePart.isNotEmpty()) {
-                                    sdf.timeZone = TimeZone.getTimeZone("GMT$timezonePart")
-                                }
-                                
-                                sdf.parse(dateTimePart)?.time ?: 0
-                            } catch (e: Exception) {
-                                0
-                            }
-                        }
-
                         if (epgMap.containsKey(channelId)) {
                             epgMap[channelId] = epgMap[channelId]!!.copy(
                                 programmes = EpgProgrammeList(
                                     epgMap[channelId]!!.programmes + listOf(
                                         EpgProgramme(
-                                            startAt = parseTime(startTime),
-                                            endAt = parseTime(stopTime),
+                                            startAt = parseEpgTime(startTime),
+                                            endAt = parseEpgTime(stopTime),
                                             title = title,
                                         )
                                     )
