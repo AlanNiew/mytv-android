@@ -30,6 +30,9 @@ import java.net.SocketException
 object HttpServer : Loggable() {
     private const val SERVER_PORT = 10481
 
+    /** 鉴权请求头,与网页端 requestApi 保持一致 */
+    private const val AUTH_HEADER = "X-Auth-Token"
+
     private val uploadedApkFile = File(AppGlobal.cacheDir, "uploaded_apk.apk").apply {
         deleteOnExit()
     }
@@ -89,6 +92,22 @@ object HttpServer : Loggable() {
         )
     }
 
+    /**
+     * 鉴权校验,失败时返回 401
+     * @return 是否通过校验
+     */
+    private fun checkAuth(
+        request: AsyncHttpServerRequest,
+        response: AsyncHttpServerResponse,
+    ): Boolean {
+        val token = request.headers[AUTH_HEADER] ?: ""
+        if (token == SP.httpToken) return true
+
+        log.w("鉴权失败: 请求缺少或携带错误令牌")
+        wrapResponse(response).code(401).send("unauthorized")
+        return false
+    }
+
     private fun handleRawResource(
         response: AsyncHttpServerResponse,
         context: Context,
@@ -123,6 +142,8 @@ object HttpServer : Loggable() {
         request: AsyncHttpServerRequest,
         response: AsyncHttpServerResponse,
     ) {
+        if (!checkAuth(request, response)) return
+
         val body = request.getBody<JSONObjectBody>().get()
         val iptvSourceUrl = body.get("iptvSourceUrl").toString()
         val epgXmlUrl = body.get("epgXmlUrl").toString()
@@ -148,6 +169,8 @@ object HttpServer : Loggable() {
         response: AsyncHttpServerResponse,
         context: Context,
     ) {
+        if (!checkAuth(request, response)) return
+
         val body = request.getBody<MultipartFormDataBody>()
 
         val os = uploadedApkFile.outputStream()

@@ -40,6 +40,15 @@ fun LeanbackSettingsCategoryHttp(
                 locK = true,
             )
         }
+
+        item {
+            LeanbackSettingsCategoryListItem(
+                headlineContent = "连接令牌",
+                supportingContent = "网页端远程修改设置需要,可在电视上查看",
+                trailingContent = SP.httpToken,
+                locK = true,
+            )
+        }
     }
 }
 

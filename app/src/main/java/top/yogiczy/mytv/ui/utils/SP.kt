@@ -3,6 +3,7 @@ package top.yogiczy.mytv.ui.utils
 import android.content.Context
 import android.content.SharedPreferences
 import top.yogiczy.mytv.data.utils.Constants
+import java.security.SecureRandom
 
 /**
  * 应用配置存储
@@ -29,6 +30,10 @@ object SP {
 
         /** 设备显示类型 */
         APP_DEVICE_DISPLAY_TYPE,
+
+        /** ==================== HTTP 服务 ==================== */
+        /** 连接令牌(局域网远程设置鉴权) */
+        HTTP_TOKEN,
 
         /** ==================== 调式 ==================== */
         /** 显示fps */
@@ -133,6 +138,25 @@ object SP {
     var appDeviceDisplayType: AppDeviceDisplayType
         get() = AppDeviceDisplayType.fromValue(sp.getInt(KEY.APP_DEVICE_DISPLAY_TYPE.name, 0))
         set(value) = sp.edit().putInt(KEY.APP_DEVICE_DISPLAY_TYPE.name, value.value).apply()
+
+    /** ==================== HTTP 服务 ==================== */
+    /** 连接令牌(首次读取时自动生成,用于局域网远程设置鉴权) */
+    var httpToken: String
+        get() {
+            val token = sp.getString(KEY.HTTP_TOKEN.name, "") ?: ""
+            if (token.isNotBlank()) return token
+
+            val newToken = generateToken()
+            sp.edit().putString(KEY.HTTP_TOKEN.name, newToken).apply()
+            return newToken
+        }
+        set(value) = sp.edit().putString(KEY.HTTP_TOKEN.name, value).apply()
+
+    private fun generateToken(): String {
+        val bytes = ByteArray(16)
+        SecureRandom().nextBytes(bytes)
+        return bytes.joinToString("") { "%02x".format(it) }
+    }
 
     /** ==================== 调式 ==================== */
     /** 显示fps */

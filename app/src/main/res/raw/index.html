@@ -131,8 +131,21 @@
         //const baseUrl = "http://127.0.0.1:10481"
         const baseUrl = ""
 
-        async function requestApi(url, config) {
+        async function requestApi(url, config, authRetry = 0) {
+            const token = localStorage.getItem('httpToken')
+            if (token && config && config.method === 'POST') {
+                config = { ...config, headers: { ...config.headers, 'X-Auth-Token': token } }
+            }
+
             const resp = await fetch(`${baseUrl}${url}`, config)
+            if (resp.status === 401 && authRetry < 2) {
+                const inputToken = prompt('需要连接令牌才能修改设置,请在电视端「设置-网络」中查看:')
+                if (inputToken) {
+                    localStorage.setItem('httpToken', inputToken)
+                    return requestApi(url, config, authRetry + 1)
+                }
+                throw new Error('未输入令牌')
+            }
             if (resp.status !== 200) {
                 throw new Error(`请求失败：${resp.status}`)
             }
