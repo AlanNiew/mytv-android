@@ -30,6 +30,9 @@ import java.net.SocketException
 object HttpServer : Loggable() {
     private const val SERVER_PORT = 10481
 
+    /** 上传 APK 大小上限(200MB) */
+    private const val MAX_APK_SIZE = 200L * 1024 * 1024
+
     /** 鉴权请求头,与网页端 requestApi 保持一致 */
     private const val AUTH_HEADER = "X-Auth-Token"
 
@@ -59,8 +62,8 @@ object HttpServer : Loggable() {
                     handleRawResource(response, context, "text/javascript", R.raw.index_js)
                 }
 
-                server.get("/api/settings") { _, response ->
-                    handleGetSettings(response)
+                server.get("/api/settings") { request, response ->
+                    handleGetSettings(request, response)
                 }
 
                 server.post("/api/settings") { request, response ->
@@ -76,7 +79,11 @@ object HttpServer : Loggable() {
             } catch (ex: Exception) {
                 log.e("服务启动失败: ${ex.message}", ex)
                 launch(Dispatchers.Main) {
-                    Toast.makeText(context, "设置服务启动失败", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.http_server_start_failed),
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
             }
         }
@@ -120,7 +127,13 @@ object HttpServer : Loggable() {
         }
     }
 
-    private fun handleGetSettings(response: AsyncHttpServerResponse) {
+    private fun handleGetSettings(
+        request: AsyncHttpServerRequest,
+        response: AsyncHttpServerResponse,
+    ) {
+        // 配置与日志含订阅源地址等隐私信息,读取同样需要鉴权
+        if (!checkAuth(request, response)) return
+
         wrapResponse(response).apply {
             setContentType("application/json")
             send(
@@ -171,29 +184,62 @@ object HttpServer : Loggable() {
     ) {
         if (!checkAuth(request, response)) return
 
+        // 根据 Content-Length 提前拒绝超大文件
+        val contentLength = request.headers["Content-Length"]?.toLong() ?: -1
+        if (contentLength > MAX_APK_SIZE) {
+            log.w("拒绝上传: 文件过大($contentLength)")
+            wrapResponse(response).code(413).send("file too large")
+            return
+        }
+
         val body = request.getBody<MultipartFormDataBody>()
 
         val os = uploadedApkFile.outputStream()
-        val contentLength = request.headers["Content-Length"]?.toLong() ?: 1
         var hasReceived = 0L
+        var hasError = false
 
         body.setMultipartCallback { part ->
             if (part.isFile) {
                 body.setDataCallback { _, bb ->
                     val byteArray = bb.allByteArray
                     hasReceived += byteArray.size
-                    showToast("正在接收文件: ${(hasReceived * 100f / contentLength).toInt()}%")
+                    if (hasReceived > MAX_APK_SIZE) {
+                        hasError = true
+                        log.w("拒绝上传: 超出大小上限")
+                        body.dataEmitter.close()
+                        return@setDataCallback
+                    }
+                    val percent = if (contentLength > 0) {
+                        (hasReceived * 100f / contentLength).toInt()
+                    } else {
+                        0
+                    }
+                    showToast(context.getString(R.string.http_upload_progress, percent))
                     os.write(byteArray)
                 }
             }
         }
 
         body.setEndCallback {
-            showToast("文件接收完成")
-            body.dataEmitter.close()
-            os.flush()
-            os.close()
-            ApkInstaller.installApk(context, uploadedApkFile.path)
+            try {
+                os.flush()
+            } catch (ex: Exception) {
+                log.e("上传APK写入失败", ex)
+                hasError = true
+            } finally {
+                try {
+                    os.close()
+                } catch (_: Exception) {
+                }
+            }
+
+            if (!hasError && hasReceived > 0) {
+                showToast(context.getString(R.string.http_upload_complete))
+                ApkInstaller.installApk(context, uploadedApkFile.path)
+            } else {
+                log.w("上传APK失败: 文件为空或接收异常")
+                uploadedApkFile.delete()
+            }
         }
 
         wrapResponse(response).send("success")

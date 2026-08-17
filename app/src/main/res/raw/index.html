@@ -133,7 +133,8 @@
 
         async function requestApi(url, config, authRetry = 0) {
             const token = localStorage.getItem('httpToken')
-            if (token && config && config.method === 'POST') {
+            // GET/POST 均携带令牌(服务端读取配置同样需要鉴权)
+            if (token && config) {
                 config = { ...config, headers: { ...config.headers, 'X-Auth-Token': token } }
             }
 
