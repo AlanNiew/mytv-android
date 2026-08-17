@@ -1,3 +1,206 @@
 <resources>
     <string name="app_name">我的电视</string>
+
+    <!-- 通用 -->
+    <string name="common_loading">加载中...</string>
+    <string name="common_loading_failed">加载失败</string>
+    <string name="common_no_programme">无节目</string>
+    <string name="common_resolution">分辨率：%1$d×%2$d</string>
+    <string name="common_net_speed_kb">网速：%1$dKB/s</string>
+    <string name="common_net_speed_mb">网速：%1$sMB/s</string>
+
+    <!-- 主界面 -->
+    <string name="main_exit_confirm">再按一次退出</string>
+
+    <!-- Toast -->
+    <string name="toast_favorite_added">已收藏: %1$s</string>
+    <string name="toast_favorite_removed">取消收藏: %1$s</string>
+    <string name="toast_cache_cleared">缓存已清除，请重启应用</string>
+    <string name="toast_cache_clear_success">清除缓存成功</string>
+
+    <!-- 面板 -->
+    <string name="panel_no_favorite_channels">没有收藏的频道</string>
+    <string name="panel_favorite">收藏</string>
+    <string name="panel_channels_count">%1$d个频道</string>
+    <string name="panel_now_playing">正在播放：%1$s</string>
+    <string name="panel_next_playing">稍后播放：%1$s</string>
+
+    <!-- 节目单 -->
+    <string name="epg_switch_channel">左右切换频道</string>
+    <string name="epg_no_programme">当前频道暂无节目</string>
+    <string name="epg_playing">playing</string>
+
+    <!-- 经典面板 -->
+    <string name="classic_panel_favorite_group">我的收藏</string>
+    <string name="classic_panel_view_epg">向右查看节目单</string>
+    <string name="classic_panel_today">今天</string>
+    <string name="classic_panel_tomorrow">明天</string>
+    <string name="classic_panel_day_after_tomorrow">后天</string>
+
+    <!-- 快捷面板 -->
+    <string name="quick_panel_clear_cache">清除缓存</string>
+    <string name="quick_panel_more_settings">更多设置</string>
+    <string name="quick_panel_multi_channels">多线路</string>
+    <string name="quick_panel_switch_channel">短按切换线路</string>
+    <string name="quick_panel_channel">线路%1$d</string>
+    <string name="quick_panel_checked">checked</string>
+
+    <!-- 视频播放 -->
+    <string name="video_play_failed">播放失败</string>
+    <string name="video_metadata_video">视频</string>
+    <string name="video_metadata_codec">编码: %1$s</string>
+    <string name="video_metadata_decoder">解码器: %1$s</string>
+    <string name="video_metadata_resolution">分辨率: %1$dx%2$d</string>
+    <string name="video_metadata_color">色彩: %1$s</string>
+    <string name="video_metadata_frame_rate">帧率: %1$s</string>
+    <string name="video_metadata_bitrate">比特率: %1$d kbps</string>
+    <string name="video_metadata_audio">音频</string>
+    <string name="video_metadata_channels">声道数: %1$d</string>
+    <string name="video_metadata_sample_rate">采样率: %1$d Hz</string>
+
+    <!-- 画面比例 -->
+    <string name="aspect_ratio_16_9">16:9</string>
+    <string name="aspect_ratio_4_3">4:3</string>
+    <string name="aspect_ratio_auto">自动拉伸</string>
+    <string name="aspect_ratio_original">原始</string>
+    <string name="aspect_ratio_title">画面比例 %1$s</string>
+
+    <!-- 设置 -->
+    <string name="settings_about">关于</string>
+    <string name="settings_app">应用</string>
+    <string name="settings_iptv">直播源</string>
+    <string name="settings_epg">节目单</string>
+    <string name="settings_ui">界面</string>
+    <string name="settings_favorite">收藏</string>
+    <string name="settings_update">更新</string>
+    <string name="settings_video_player">播放器</string>
+    <string name="settings_http">网络</string>
+    <string name="settings_debug">调试</string>
+    <string name="settings_log">日志</string>
+    <string name="settings_more">更多设置</string>
+
+    <!-- 关于 -->
+    <string name="settings_about_app_name">应用名称</string>
+    <string name="settings_about_app_version">应用版本</string>
+    <string name="settings_about_repo">代码仓库</string>
+    <string name="settings_about_scan_repo">扫码前往代码仓库</string>
+
+    <!-- 应用 -->
+    <string name="settings_app_boot">开机自启</string>
+    <string name="settings_app_boot_desc">请确保当前设备支持该功能</string>
+    <string name="settings_app_display_mode">显示模式</string>
+    <string name="settings_app_display_mode_desc">短按切换应用显示模式</string>
+    <string name="settings_app_display_mode_tv">TV</string>
+    <string name="settings_app_display_mode_pad">Pad</string>
+    <string name="settings_app_display_mode_mobile">手机</string>
+    <string name="settings_app_display_mode_not_open">暂未开放</string>
+    <string name="settings_app_update">应用更新</string>
+    <string name="settings_app_update_latest">最新版本：v%1$s</string>
+    <string name="settings_app_update_found">发现新版本</string>
+    <string name="settings_app_update_none">无更新</string>
+
+    <!-- 直播源 -->
+    <string name="settings_iptv_channel_no">数字选台</string>
+    <string name="settings_iptv_channel_no_desc">通过数字选择频道</string>
+    <string name="settings_iptv_channel_change_flip">换台反转</string>
+    <string name="settings_iptv_channel_change_flip_on">方向键上：下一个频道；方向键下：上一个频道</string>
+    <string name="settings_iptv_channel_change_flip_off">方向键上：上一个频道；方向键下：下一个频道</string>
+    <string name="settings_iptv_source_simplify">直播源精简</string>
+    <string name="settings_iptv_source_simplify_on">显示精简直播源(仅央视、地方卫视)</string>
+    <string name="settings_iptv_source_simplify_off">显示完整直播源</string>
+    <string name="settings_iptv_source_cache_time">直播源缓存时间</string>
+    <string name="settings_iptv_source_cache_time_desc">短按增加1小时，长按设为0小时</string>
+    <string name="settings_iptv_source_custom">自定义直播源</string>
+    <string name="settings_iptv_source_enabled">已启用</string>
+    <string name="settings_iptv_source_disabled">未启用</string>
+    <string name="settings_iptv_source_clear_cache">清除缓存</string>
+    <string name="settings_iptv_source_clear_cache_desc">短按清除直播源缓存文件、可播放域名列表</string>
+    <string name="settings_iptv_source_history_short_long">短按切换；长按删除历史记录</string>
+    <string name="settings_iptv_source_history">历史直播源</string>
+    <string name="settings_iptv_source_default">默认直播源（网络需要支持ipv6）</string>
+    <string name="settings_iptv_source_add">添加其他直播源</string>
+    <string name="settings_scan_settings_page">扫码前往设置页面</string>
+
+    <!-- 节目单 -->
+    <string name="settings_epg_enable">节目单启用</string>
+    <string name="settings_epg_enable_desc">首次加载时可能会有跳帧风险</string>
+    <string name="settings_epg_refresh_threshold">节目单刷新时间阈值</string>
+    <string name="settings_epg_refresh_threshold_desc">短按增加1小时，长按设为0小时；时间不到%1$d:00节目单将不会刷新</string>
+    <string name="settings_epg_refresh_threshold_value">%1$d小时</string>
+    <string name="settings_epg_custom">自定义节目单</string>
+    <string name="settings_epg_history_short_long">短按切换；长按删除历史记录</string>
+    <string name="settings_epg_history">历史节目单</string>
+    <string name="settings_epg_default">默认节目单</string>
+    <string name="settings_epg_add">添加其他节目单</string>
+    <string name="settings_epg_clear_cache">清除缓存</string>
+    <string name="settings_epg_clear_cache_desc">短按清除节目单缓存文件</string>
+
+    <!-- 界面 -->
+    <string name="settings_ui_programme_progress">节目进度</string>
+    <string name="settings_ui_programme_progress_desc">在频道项底部显示当前节目进度条</string>
+    <string name="settings_ui_classic_panel">经典选台界面</string>
+    <string name="settings_ui_classic_panel_desc">将选台界面替换为经典三段式结构</string>
+    <string name="settings_ui_time_display">时间显示</string>
+    <string name="settings_ui_time_display_hidden">不显示时间</string>
+    <string name="settings_ui_time_display_always">总是显示时间</string>
+    <string name="settings_ui_time_display_every_hour">整点前后%1$ds显示时间</string>
+    <string name="settings_ui_time_display_half_hour">半点前后%1$ds显示时间</string>
+    <string name="settings_ui_time_display_hidden_value">隐藏</string>
+    <string name="settings_ui_time_display_always_value">常显</string>
+    <string name="settings_ui_time_display_every_hour_value">整点</string>
+    <string name="settings_ui_time_display_half_hour_value">半点</string>
+    <string name="settings_ui_pip">画中画模式</string>
+    <string name="settings_ui_auto_close">超时自动关闭界面</string>
+    <string name="settings_ui_auto_close_desc">影响选台界面，快捷操作界面</string>
+    <string name="settings_ui_density_scale">界面整体缩放比例</string>
+    <string name="settings_ui_density_scale_desc">短按切换缩放比例，长按恢复默认；部分界面受影响</string>
+    <string name="settings_ui_scale_value">×%1$s</string>
+    <string name="settings_ui_font_scale">界面字体缩放比例</string>
+    <string name="settings_ui_font_scale_desc">短按切换缩放比例，长按恢复默认；部分界面受影响</string>
+
+    <!-- 收藏 -->
+    <string name="settings_favorite_enable">收藏启用</string>
+    <string name="settings_favorite_current">当前已收藏</string>
+    <string name="settings_favorite_current_desc">包括不存在直播源中的频道</string>
+    <string name="settings_favorite_clear">清空全部收藏</string>
+    <string name="settings_favorite_clear_desc">短按立即清空全部收藏</string>
+
+    <!-- 更新 -->
+    <string name="settings_update_force_remind">更新强提醒</string>
+    <string name="settings_update_force_remind_on">检测到新版本时会弹窗提醒</string>
+    <string name="settings_update_force_remind_off">检测到新版本时仅在左上角提示</string>
+
+    <!-- 播放器 -->
+    <string name="settings_video_player_aspect_ratio">全局画面比例</string>
+    <string name="settings_video_player_load_timeout">播放器加载超时</string>
+    <string name="settings_video_player_load_timeout_desc">影响超时换源、断线重连</string>
+    <string name="settings_video_player_user_agent">播放器自定义UA</string>
+
+    <!-- 调试 -->
+    <string name="settings_debug_show_fps">显示FPS</string>
+    <string name="settings_debug_show_fps_desc">在屏幕左上角显示fps和柱状图</string>
+    <string name="settings_debug_show_player_info">显示播放器信息</string>
+    <string name="settings_debug_show_player_info_desc">显示播放器详细信息（编码、解码器、采样率等）</string>
+
+    <!-- 更多设置 -->
+    <string name="settings_more_page">设置页面</string>
+
+    <!-- 网络(HTTP) -->
+    <string name="settings_http_retry_count">HTTP请求重试次数</string>
+    <string name="settings_http_retry_interval">HTTP请求重试间隔时间</string>
+    <string name="settings_http_retry_desc">影响直播源、节目单数据获取</string>
+    <string name="settings_http_token">连接令牌</string>
+    <string name="settings_http_token_desc">网页端远程修改设置需要,可在电视上查看</string>
+    <string name="settings_http_trust_all_certificates">信任所有HTTPS证书</string>
+    <string name="settings_http_trust_all_certificates_desc">危险:跳过证书校验,仅用于自签名证书直播源;重启生效</string>
+    <string name="http_server_start_failed">设置服务启动失败</string>
+    <string name="http_upload_progress">正在接收文件: %1$d%%</string>
+    <string name="http_upload_complete">文件接收完成</string>
+
+    <!-- 更新 -->
+    <string name="update_new_version_available">新版本: v%1$s</string>
+    <string name="update_new_version_title">新版本：v%1$s</string>
+    <string name="update_install_permission_denied">未授予安装权限</string>
+    <string name="update_now">立即更新</string>
+    <string name="update_ignore">忽略</string>
 </resources>

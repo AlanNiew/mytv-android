@@ -15,8 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.entities.EpgProgrammeCurrent
 import top.yogiczy.mytv.data.entities.Iptv
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
@@ -82,11 +84,17 @@ fun LeanbackPanelIptvInfo(
             LocalContentColor provides LocalContentColor.current.copy(alpha = 0.8f),
         ) {
             Text(
-                text = "正在播放：${currentProgrammes?.now?.title ?: "无节目"}",
+                text = stringResource(
+                    R.string.panel_now_playing,
+                    currentProgrammes?.now?.title ?: stringResource(R.string.common_no_programme)
+                ),
                 maxLines = 1,
             )
             Text(
-                text = "稍后播放：${currentProgrammes?.next?.title ?: "无节目"}",
+                text = stringResource(
+                    R.string.panel_next_playing,
+                    currentProgrammes?.next?.title ?: stringResource(R.string.common_no_programme)
+                ),
                 maxLines = 1,
             )
         }

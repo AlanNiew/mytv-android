@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyColumn
@@ -35,6 +36,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
 import okhttp3.Request
 import okio.IOException
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.OkHttpClientProvider
 import top.yogiczy.mytv.data.entities.Iptv
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
@@ -60,7 +62,7 @@ fun LeanbackQuickPanelIptvChannelsDialog(
         AlertDialog(
             modifier = modifier,
             onDismissRequest = onDismissRequest,
-            confirmButton = { Text(text = "短按切换线路") },
+            confirmButton = { Text(text = stringResource(R.string.quick_panel_switch_channel)) },
             title = { Text(text = iptv.name) },
             text = {
                 var hasFocused by remember { mutableStateOf(false) }
@@ -135,7 +137,7 @@ private fun LeanbackQuickPanelIptvChannelItem(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.Bottom,
             ) {
-                androidx.tv.material3.Text(text = "线路${urlIndex + 1}")
+                androidx.tv.material3.Text(text = stringResource(R.string.quick_panel_channel, urlIndex + 1))
 
                 Row(
                     modifier = Modifier.padding(bottom = 2.dp),
@@ -179,7 +181,7 @@ private fun LeanbackQuickPanelIptvChannelItem(
             if (isSelected) {
                 androidx.tv.material3.Icon(
                     Icons.Default.CheckCircle,
-                    contentDescription = "checked",
+                    contentDescription = stringResource(R.string.quick_panel_checked),
                 )
             }
         },

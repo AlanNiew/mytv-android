@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
@@ -21,9 +22,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yogiczy.mytv.AppGlobal
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.entities.EpgList
 import top.yogiczy.mytv.data.entities.EpgList.Companion.currentProgrammes
 import top.yogiczy.mytv.data.entities.IptvGroupList
@@ -75,6 +76,12 @@ fun LeanbackMainContent(
         videoPlayerState = videoPlayerState,
         iptvGroupList = iptvGroupList,
     )
+
+    // 预取提示文案(回调 lambda 非 @Composable,不能直接调用 stringResource)
+    val toastFavoriteRemovedFormat = stringResource(R.string.toast_favorite_removed)
+    val toastFavoriteAddedFormat = stringResource(R.string.toast_favorite_added)
+    val toastCacheClearedText = stringResource(R.string.toast_cache_cleared)
+
     val panelChannelNoSelectState = rememberLeanbackPanelChannelNoSelectState(
         onChannelNoConfirm = {
             val channelNo = it.toInt() - 1
@@ -86,17 +93,17 @@ fun LeanbackMainContent(
     )
 
     val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(Unit) {
-        // 防止切换到其他界面时焦点丢失
-        // TODO 换一个更好的解决方案
-        while (true) {
-            if (!mainContentState.isPanelVisible
-                && !mainContentState.isSettingsVisible
-                && !mainContentState.isQuickPanelVisible
-            ) {
-                focusRequester.requestFocus()
-            }
-            delay(100)
+    // 面板/设置/快捷面板关闭时恢复视频层焦点(事件驱动,替代每100ms轮询)
+    LaunchedEffect(
+        mainContentState.isPanelVisible,
+        mainContentState.isSettingsVisible,
+        mainContentState.isQuickPanelVisible,
+    ) {
+        if (!mainContentState.isPanelVisible
+            && !mainContentState.isSettingsVisible
+            && !mainContentState.isQuickPanelVisible
+        ) {
+            focusRequester.requestFocus()
         }
     }
 
@@ -231,10 +238,14 @@ fun LeanbackMainContent(
 
                         if (settingsViewModel.iptvChannelFavoriteList.contains(it.channelName)) {
                             settingsViewModel.iptvChannelFavoriteList -= it.channelName
-                            LeanbackToastState.I.showToast("取消收藏: ${it.channelName}")
+                            LeanbackToastState.I.showToast(
+                                String.format(toastFavoriteRemovedFormat, it.channelName)
+                            )
                         } else {
                             settingsViewModel.iptvChannelFavoriteList += it.channelName
-                            LeanbackToastState.I.showToast("已收藏: ${it.channelName}")
+                            LeanbackToastState.I.showToast(
+                                String.format(toastFavoriteAddedFormat, it.channelName)
+                            )
                         }
                     },
                     iptvFavoriteListProvider = { settingsViewModel.iptvChannelFavoriteList.toImmutableList() },
@@ -258,10 +269,14 @@ fun LeanbackMainContent(
 
                         if (settingsViewModel.iptvChannelFavoriteList.contains(it.channelName)) {
                             settingsViewModel.iptvChannelFavoriteList -= it.channelName
-                            LeanbackToastState.I.showToast("取消收藏: ${it.channelName}")
+                            LeanbackToastState.I.showToast(
+                                String.format(toastFavoriteRemovedFormat, it.channelName)
+                            )
                         } else {
                             settingsViewModel.iptvChannelFavoriteList += it.channelName
-                            LeanbackToastState.I.showToast("已收藏: ${it.channelName}")
+                            LeanbackToastState.I.showToast(
+                                String.format(toastFavoriteAddedFormat, it.channelName)
+                            )
                         }
                     },
                     iptvFavoriteListProvider = { settingsViewModel.iptvChannelFavoriteList.toImmutableList() },
@@ -298,7 +313,7 @@ fun LeanbackMainContent(
                     coroutineScope.launch {
                         AppGlobal.cacheDir.deleteRecursively()
                     }
-                    LeanbackToastState.I.showToast("缓存已清除，请重启应用")
+                    LeanbackToastState.I.showToast(toastCacheClearedText)
                 },
                 onMoreSettings = { mainContentState.isSettingsVisible = true },
                 onClose = { mainContentState.isQuickPanelVisible = false },

@@ -25,6 +25,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
@@ -39,6 +40,7 @@ import top.yogiczy.mytv.data.entities.IptvGroupList
 import top.yogiczy.mytv.data.entities.IptvGroupList.Companion.iptvGroupIdx
 import top.yogiczy.mytv.data.entities.IptvGroupList.Companion.iptvList
 import top.yogiczy.mytv.data.entities.IptvList
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.utils.Constants
 import top.yogiczy.mytv.ui.rememberLeanbackChildPadding
 import top.yogiczy.mytv.ui.screens.leanback.classicpanel.components.LeanbackClassicPanelEpgList
@@ -227,7 +229,7 @@ private fun LeanbackClassicPanelScreenContent(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background.copy(0.7f))
                     .padding(horizontal = 4.dp),
-                text = "向右查看节目单",
+                text = stringResource(R.string.classic_panel_view_epg),
                 onTap = { epgListVisible = true },
             )
         }

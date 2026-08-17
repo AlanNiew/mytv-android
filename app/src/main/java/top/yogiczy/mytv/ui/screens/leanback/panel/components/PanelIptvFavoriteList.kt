@@ -22,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.grid.TvGridCells
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import top.yogiczy.mytv.data.entities.Epg
 import top.yogiczy.mytv.data.entities.Epg.Companion.currentProgrammes
 import top.yogiczy.mytv.data.entities.EpgList
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.entities.Iptv
 import top.yogiczy.mytv.data.entities.IptvList
 import top.yogiczy.mytv.ui.rememberLeanbackChildPadding
@@ -79,10 +81,10 @@ fun LeanbackPanelIptvFavoriteList(
             CompositionLocalProvider(
                 LocalTextStyle provides MaterialTheme.typography.labelMedium,
             ) {
-                Text(text = "收藏")
+                Text(text = stringResource(R.string.panel_favorite))
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = "${iptvList.size}个频道",
+                    text = stringResource(R.string.panel_channels_count, iptvList.size),
                     color = LocalContentColor.current.copy(alpha = 0.8f),
                 )
             }

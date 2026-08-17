@@ -13,11 +13,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.yogiczy.mytv.AppGlobal
+import top.yogiczy.mytv.R
+import top.yogiczy.mytv.data.utils.Constants
 import top.yogiczy.mytv.ui.screens.leanback.settings.LeanbackSettingsViewModel
 import top.yogiczy.mytv.ui.screens.leanback.toast.LeanbackToastState
 import top.yogiczy.mytv.ui.screens.leanback.update.components.LeanbackUpdateDialog
@@ -37,6 +40,14 @@ fun LeanbackUpdateScreen(
 
     LaunchedEffect(Unit) {
         delay(3000)
+
+        // 节流:距离上次检查不足指定间隔则跳过,避免每次启动都请求更新接口
+        val now = System.currentTimeMillis()
+        if (now - settingsViewModel.appLastUpdateCheckTime < Constants.UPDATE_CHECK_INTERVAL) {
+            return@LaunchedEffect
+        }
+        settingsViewModel.appLastUpdateCheckTime = now
+
         updateViewModel.checkUpdate(packageInfo.versionName)
 
         val latestRelease = updateViewModel.latestRelease
@@ -49,7 +60,9 @@ fun LeanbackUpdateScreen(
             if (settingsViewModel.updateForceRemind) {
                 updateViewModel.showDialog = true
             } else {
-                LeanbackToastState.I.showToast("新版本: v${latestRelease.version}")
+                LeanbackToastState.I.showToast(
+                    context.getString(R.string.update_new_version_available, latestRelease.version)
+                )
             }
         }
     }
@@ -60,7 +73,7 @@ fun LeanbackUpdateScreen(
                 if (context.packageManager.canRequestPackageInstalls()) {
                     ApkInstaller.installApk(context, latestFile.path)
                 } else {
-                    LeanbackToastState.I.showToast("未授予安装权限")
+                    LeanbackToastState.I.showToast(context.getString(R.string.update_install_permission_denied))
                 }
             }
         }

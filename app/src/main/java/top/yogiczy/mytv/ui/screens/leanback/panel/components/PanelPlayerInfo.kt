@@ -16,9 +16,11 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.ui.screens.leanback.video.player.LeanbackVideoPlayer
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
 import java.text.DecimalFormat
@@ -53,7 +55,7 @@ private fun PanelPlayerInfoResolution(
     val resolution = resolutionProvider()
 
     Text(
-        text = "分辨率：${resolution.first}×${resolution.second}",
+        text = stringResource(R.string.common_resolution, resolution.first, resolution.second),
         modifier = modifier,
     )
 }
@@ -64,8 +66,8 @@ private fun PanelPlayerInfoNetSpeed(
     netSpeed: Long = rememberNetSpeed(),
 ) {
     Text(
-        text = if (netSpeed < 1024 * 999) "网速：${netSpeed / 1024}KB/s"
-        else "网速：${DecimalFormat("#.#").format(netSpeed / 1024 / 1024f)}MB/s",
+        text = if (netSpeed < 1024 * 999) stringResource(R.string.common_net_speed_kb, netSpeed / 1024)
+        else stringResource(R.string.common_net_speed_mb, DecimalFormat("#.#").format(netSpeed / 1024 / 1024f)),
         modifier = modifier,
     )
 }

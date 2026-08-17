@@ -21,6 +21,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -32,6 +33,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.repositories.iptv.IptvRepository
 import top.yogiczy.mytv.data.utils.Constants
 import top.yogiczy.mytv.ui.screens.leanback.components.LeanbackQrcodeDialog
@@ -50,6 +52,7 @@ fun LeanbackSettingsCategoryIptv(
     settingsViewModel: LeanbackSettingsViewModel = viewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     TvLazyColumn(
         modifier = modifier,
@@ -58,8 +61,8 @@ fun LeanbackSettingsCategoryIptv(
     ) {
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "数字选台",
-                supportingContent = "通过数字选择频道",
+                headlineContent = stringResource(R.string.settings_iptv_channel_no),
+                supportingContent = stringResource(R.string.settings_iptv_channel_no_desc),
                 trailingContent = {
                     Switch(
                         checked = settingsViewModel.iptvChannelNoSelectEnable,
@@ -75,9 +78,9 @@ fun LeanbackSettingsCategoryIptv(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "换台反转",
-                supportingContent = if (settingsViewModel.iptvChannelChangeFlip) "方向键上：下一个频道；方向键下：上一个频道"
-                else "方向键上：上一个频道；方向键下：下一个频道",
+                headlineContent = stringResource(R.string.settings_iptv_channel_change_flip),
+                supportingContent = if (settingsViewModel.iptvChannelChangeFlip) stringResource(R.string.settings_iptv_channel_change_flip_on)
+                else stringResource(R.string.settings_iptv_channel_change_flip_off),
                 trailingContent = {
                     Switch(
                         checked = settingsViewModel.iptvChannelChangeFlip,
@@ -93,8 +96,8 @@ fun LeanbackSettingsCategoryIptv(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "直播源精简",
-                supportingContent = if (settingsViewModel.iptvSourceSimplify) "显示精简直播源(仅央视、地方卫视)" else "显示完整直播源",
+                headlineContent = stringResource(R.string.settings_iptv_source_simplify),
+                supportingContent = if (settingsViewModel.iptvSourceSimplify) stringResource(R.string.settings_iptv_source_simplify_on) else stringResource(R.string.settings_iptv_source_simplify_off),
                 trailingContent = {
                     Switch(checked = settingsViewModel.iptvSourceSimplify, onCheckedChange = null)
                 },
@@ -106,8 +109,8 @@ fun LeanbackSettingsCategoryIptv(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "直播源缓存时间",
-                supportingContent = "短按增加1小时，长按设为0小时",
+                headlineContent = stringResource(R.string.settings_iptv_source_cache_time),
+                supportingContent = stringResource(R.string.settings_iptv_source_cache_time_desc),
                 trailingContent = settingsViewModel.iptvSourceCacheTime.humanizeMs(),
                 onSelected = {
                     settingsViewModel.iptvSourceCacheTime =
@@ -123,9 +126,9 @@ fun LeanbackSettingsCategoryIptv(
             var showDialog by remember { mutableStateOf(false) }
 
             LeanbackSettingsCategoryListItem(
-                headlineContent = "自定义直播源",
+                headlineContent = stringResource(R.string.settings_iptv_source_custom),
                 supportingContent = if (settingsViewModel.iptvSourceUrl != Constants.IPTV_SOURCE_URL) settingsViewModel.iptvSourceUrl else null,
-                trailingContent = if (settingsViewModel.iptvSourceUrl != Constants.IPTV_SOURCE_URL) "已启用" else "未启用",
+                trailingContent = if (settingsViewModel.iptvSourceUrl != Constants.IPTV_SOURCE_URL) stringResource(R.string.settings_iptv_source_enabled) else stringResource(R.string.settings_iptv_source_disabled),
                 onSelected = { showDialog = true },
                 remoteConfig = true,
             )
@@ -152,12 +155,12 @@ fun LeanbackSettingsCategoryIptv(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "清除缓存",
-                supportingContent = "短按清除直播源缓存文件、可播放域名列表",
+                headlineContent = stringResource(R.string.settings_iptv_source_clear_cache),
+                supportingContent = stringResource(R.string.settings_iptv_source_clear_cache_desc),
                 onSelected = {
                     settingsViewModel.iptvPlayableHostList = emptySet()
                     coroutineScope.launch { IptvRepository().clearCache() }
-                    LeanbackToastState.I.showToast("清除缓存成功")
+                    LeanbackToastState.I.showToast(context.getString(R.string.toast_cache_clear_success))
                 },
             )
         }
@@ -182,8 +185,8 @@ private fun LeanbackSettingsIptvSourceHistoryDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
             modifier = modifier,
             onDismissRequest = onDismissRequest,
-            confirmButton = { Text(text = "短按切换；长按删除历史记录") },
-            title = { Text("历史直播源") },
+            confirmButton = { Text(text = stringResource(R.string.settings_iptv_source_history_short_long)) },
+            title = { Text(stringResource(R.string.settings_iptv_source_history)) },
             text = {
                 var hasFocused by remember { mutableStateOf(false) }
 
@@ -223,7 +226,7 @@ private fun LeanbackSettingsIptvSourceHistoryDialog(
                             onClick = { },
                             headlineContent = {
                                 androidx.tv.material3.Text(
-                                    text = if (source == Constants.IPTV_SOURCE_URL) "默认直播源（网络需要支持ipv6）" else source,
+                                    text = if (source == Constants.IPTV_SOURCE_URL) stringResource(R.string.settings_iptv_source_default) else source,
                                     modifier = Modifier.fillMaxWidth(),
                                     maxLines = if (isFocused) Int.MAX_VALUE else 2,
                                 )

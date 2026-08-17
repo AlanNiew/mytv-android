@@ -21,6 +21,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -32,6 +33,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.repositories.epg.EpgRepository
 import top.yogiczy.mytv.data.utils.Constants
 import top.yogiczy.mytv.ui.screens.leanback.components.LeanbackQrcodeDialog
@@ -49,6 +51,7 @@ fun LeanbackSettingsCategoryEpg(
     settingsViewModel: LeanbackSettingsViewModel = viewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     TvLazyColumn(
         modifier = modifier,
@@ -57,8 +60,8 @@ fun LeanbackSettingsCategoryEpg(
     ) {
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "节目单启用",
-                supportingContent = "首次加载时可能会有跳帧风险",
+                headlineContent = stringResource(R.string.settings_epg_enable),
+                supportingContent = stringResource(R.string.settings_epg_enable_desc),
                 trailingContent = {
                     Switch(checked = settingsViewModel.epgEnable, onCheckedChange = null)
                 },
@@ -70,9 +73,9 @@ fun LeanbackSettingsCategoryEpg(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "节目单刷新时间阈值",
-                supportingContent = "短按增加1小时，长按设为0小时；时间不到${settingsViewModel.epgRefreshTimeThreshold}:00节目单将不会刷新",
-                trailingContent = "${settingsViewModel.epgRefreshTimeThreshold}小时",
+                headlineContent = stringResource(R.string.settings_epg_refresh_threshold),
+                supportingContent = stringResource(R.string.settings_epg_refresh_threshold_desc, settingsViewModel.epgRefreshTimeThreshold),
+                trailingContent = stringResource(R.string.settings_epg_refresh_threshold_value, settingsViewModel.epgRefreshTimeThreshold),
                 onSelected = {
                     settingsViewModel.epgRefreshTimeThreshold =
                         (settingsViewModel.epgRefreshTimeThreshold + 1) % 12
@@ -87,10 +90,10 @@ fun LeanbackSettingsCategoryEpg(
             var showDialog by remember { mutableStateOf(false) }
 
             LeanbackSettingsCategoryListItem(
-                headlineContent = "自定义节目单",
+                headlineContent = stringResource(R.string.settings_epg_custom),
                 supportingContent = if (settingsViewModel.epgXmlUrl != Constants.EPG_XML_URL)
                     settingsViewModel.epgXmlUrl else null,
-                trailingContent = if (settingsViewModel.epgXmlUrl != Constants.EPG_XML_URL) "已启用" else "未启用",
+                trailingContent = if (settingsViewModel.epgXmlUrl != Constants.EPG_XML_URL) stringResource(R.string.settings_iptv_source_enabled) else stringResource(R.string.settings_iptv_source_disabled),
                 onSelected = { showDialog = true },
                 remoteConfig = true,
             )
@@ -119,11 +122,11 @@ fun LeanbackSettingsCategoryEpg(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "清除缓存",
-                supportingContent = "短按清除节目单缓存文件",
+                headlineContent = stringResource(R.string.settings_epg_clear_cache),
+                supportingContent = stringResource(R.string.settings_epg_clear_cache_desc),
                 onSelected = {
                     coroutineScope.launch { EpgRepository().clearCache() }
-                    LeanbackToastState.I.showToast("清除缓存成功")
+                    LeanbackToastState.I.showToast(context.getString(R.string.toast_cache_clear_success))
                 },
             )
         }
@@ -148,8 +151,8 @@ private fun LeanbackSettingsEpgSourceHistoryDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
             modifier = modifier,
             onDismissRequest = onDismissRequest,
-            confirmButton = { Text(text = "短按切换；长按删除历史记录") },
-            title = { Text("历史节目单") },
+            confirmButton = { Text(text = stringResource(R.string.settings_epg_history_short_long)) },
+            title = { Text(stringResource(R.string.settings_epg_history)) },
             text = {
                 var hasFocused by remember { mutableStateOf(false) }
 
@@ -189,7 +192,7 @@ private fun LeanbackSettingsEpgSourceHistoryDialog(
                             onClick = { },
                             headlineContent = {
                                 androidx.tv.material3.Text(
-                                    text = if (url == Constants.EPG_XML_URL) "默认节目单" else url,
+                                    text = if (url == Constants.EPG_XML_URL) stringResource(R.string.settings_epg_default) else url,
                                     modifier = Modifier.fillMaxWidth(),
                                     maxLines = if (isFocused) Int.MAX_VALUE else 2,
                                 )
@@ -198,7 +201,7 @@ private fun LeanbackSettingsEpgSourceHistoryDialog(
                                 if (currentEpgXmlUrl == url) {
                                     androidx.tv.material3.Icon(
                                         Icons.Default.CheckCircle,
-                                        contentDescription = "checked",
+                                        contentDescription = stringResource(R.string.quick_panel_checked),
                                     )
                                 }
                             },
@@ -223,13 +226,13 @@ private fun LeanbackSettingsEpgSourceHistoryDialog(
                             selected = false,
                             onClick = {},
                             headlineContent = {
-                                androidx.tv.material3.Text("添加其他节目单")
+                                androidx.tv.material3.Text(stringResource(R.string.settings_epg_add))
                             },
                         )
 
                         LeanbackQrcodeDialog(
                             text = HttpServer.serverUrl,
-                            description = "扫码前往设置页面",
+                            description = stringResource(R.string.settings_scan_settings_page),
                             showDialogProvider = { showDialog },
                             onDismissRequest = { showDialog = false },
                         )

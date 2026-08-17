@@ -7,10 +7,12 @@ import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.utils.Constants
 import top.yogiczy.mytv.ui.screens.leanback.settings.LeanbackSettingsViewModel
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
@@ -30,8 +32,8 @@ fun LeanbackSettingsCategoryUI(
     ) {
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "节目进度",
-                supportingContent = "在频道项底部显示当前节目进度条",
+                headlineContent = stringResource(R.string.settings_ui_programme_progress),
+                supportingContent = stringResource(R.string.settings_ui_programme_progress_desc),
                 trailingContent = {
                     Switch(
                         checked = settingsViewModel.uiShowEpgProgrammeProgress,
@@ -47,8 +49,8 @@ fun LeanbackSettingsCategoryUI(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "经典选台界面",
-                supportingContent = "将选台界面替换为经典三段式结构",
+                headlineContent = stringResource(R.string.settings_ui_classic_panel),
+                supportingContent = stringResource(R.string.settings_ui_classic_panel_desc),
                 trailingContent = {
                     Switch(
                         checked = settingsViewModel.uiUseClassicPanelScreen,
@@ -66,18 +68,24 @@ fun LeanbackSettingsCategoryUI(
             val timeShowRangeSeconds = Constants.UI_TIME_SHOW_RANGE / 1000
 
             LeanbackSettingsCategoryListItem(
-                headlineContent = "时间显示",
+                headlineContent = stringResource(R.string.settings_ui_time_display),
                 supportingContent = when (settingsViewModel.uiTimeShowMode) {
-                    SP.UiTimeShowMode.HIDDEN -> "不显示时间"
-                    SP.UiTimeShowMode.ALWAYS -> "总是显示时间"
-                    SP.UiTimeShowMode.EVERY_HOUR -> "整点前后${timeShowRangeSeconds}s显示时间"
-                    SP.UiTimeShowMode.HALF_HOUR -> "半点前后${timeShowRangeSeconds}s显示时间"
+                    SP.UiTimeShowMode.HIDDEN -> stringResource(R.string.settings_ui_time_display_hidden)
+                    SP.UiTimeShowMode.ALWAYS -> stringResource(R.string.settings_ui_time_display_always)
+                    SP.UiTimeShowMode.EVERY_HOUR -> stringResource(
+                        R.string.settings_ui_time_display_every_hour,
+                        timeShowRangeSeconds,
+                    )
+                    SP.UiTimeShowMode.HALF_HOUR -> stringResource(
+                        R.string.settings_ui_time_display_half_hour,
+                        timeShowRangeSeconds,
+                    )
                 },
                 trailingContent = when (settingsViewModel.uiTimeShowMode) {
-                    SP.UiTimeShowMode.HIDDEN -> "隐藏"
-                    SP.UiTimeShowMode.ALWAYS -> "常显"
-                    SP.UiTimeShowMode.EVERY_HOUR -> "整点"
-                    SP.UiTimeShowMode.HALF_HOUR -> "半点"
+                    SP.UiTimeShowMode.HIDDEN -> stringResource(R.string.settings_ui_time_display_hidden_value)
+                    SP.UiTimeShowMode.ALWAYS -> stringResource(R.string.settings_ui_time_display_always_value)
+                    SP.UiTimeShowMode.EVERY_HOUR -> stringResource(R.string.settings_ui_time_display_every_hour_value)
+                    SP.UiTimeShowMode.HALF_HOUR -> stringResource(R.string.settings_ui_time_display_half_hour_value)
                 },
                 onSelected = {
                     settingsViewModel.uiTimeShowMode =
@@ -88,7 +96,7 @@ fun LeanbackSettingsCategoryUI(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "画中画模式",
+                headlineContent = stringResource(R.string.settings_ui_pip),
                 trailingContent = {
                     Switch(
                         checked = settingsViewModel.uiPipMode,
@@ -104,8 +112,8 @@ fun LeanbackSettingsCategoryUI(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "超时自动关闭界面",
-                supportingContent = "影响选台界面，快捷操作界面",
+                headlineContent = stringResource(R.string.settings_ui_auto_close),
+                supportingContent = stringResource(R.string.settings_ui_auto_close_desc),
                 trailingContent = Constants.UI_SCREEN_AUTO_CLOSE_DELAY.humanizeMs(),
                 locK = true,
             )
@@ -118,9 +126,12 @@ fun LeanbackSettingsCategoryUI(
             val stepScale = 0.1f
 
             LeanbackSettingsCategoryListItem(
-                headlineContent = "界面整体缩放比例",
-                supportingContent = "短按切换缩放比例，长按恢复默认；部分界面受影响",
-                trailingContent = "×${DecimalFormat("#.#").format(settingsViewModel.uiDensityScaleRatio)}",
+                headlineContent = stringResource(R.string.settings_ui_density_scale),
+                supportingContent = stringResource(R.string.settings_ui_density_scale_desc),
+                trailingContent = stringResource(
+                    R.string.settings_ui_scale_value,
+                    DecimalFormat("#.#").format(settingsViewModel.uiDensityScaleRatio)
+                ),
                 onSelected = {
                     if (settingsViewModel.uiDensityScaleRatio >= maxScale) {
                         settingsViewModel.uiDensityScaleRatio = minScale
@@ -144,9 +155,12 @@ fun LeanbackSettingsCategoryUI(
             val stepScale = 0.1f
 
             LeanbackSettingsCategoryListItem(
-                headlineContent = "界面字体缩放比例",
-                supportingContent = "短按切换缩放比例，长按恢复默认；部分界面受影响",
-                trailingContent = "×${DecimalFormat("#.#").format(settingsViewModel.uiFontScaleRatio)}",
+                headlineContent = stringResource(R.string.settings_ui_font_scale),
+                supportingContent = stringResource(R.string.settings_ui_font_scale_desc),
+                trailingContent = stringResource(
+                    R.string.settings_ui_scale_value,
+                    DecimalFormat("#.#").format(settingsViewModel.uiFontScaleRatio)
+                ),
                 onSelected = {
                     if (settingsViewModel.uiFontScaleRatio >= maxScale) {
                         settingsViewModel.uiFontScaleRatio = minScale

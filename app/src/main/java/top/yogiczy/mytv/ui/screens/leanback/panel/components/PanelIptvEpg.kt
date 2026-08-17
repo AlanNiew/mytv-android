@@ -22,6 +22,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyColumn
@@ -33,6 +34,7 @@ import top.yogiczy.mytv.data.entities.Epg
 import top.yogiczy.mytv.data.entities.EpgProgramme
 import top.yogiczy.mytv.data.entities.EpgProgramme.Companion.isLive
 import top.yogiczy.mytv.data.entities.EpgProgrammeList
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.entities.Iptv
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
 import top.yogiczy.mytv.ui.utils.handleLeanbackKeyEvents
@@ -56,7 +58,7 @@ fun LeanbackPanelIptvEpgDialog(
         AlertDialog(
             modifier = modifier,
             onDismissRequest = onDismissRequest,
-            confirmButton = { Text(text = "左右切换频道") },
+            confirmButton = { Text(text = stringResource(R.string.epg_switch_channel)) },
             title = { Text(iptv.channelName) },
             text = {
                 val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -124,7 +126,7 @@ fun LeanbackPanelIptvEpgDialog(
                                         if (programme.isLive()) {
                                             Icon(
                                                 Icons.Default.PlayArrow,
-                                                contentDescription = "playing",
+                                                contentDescription = stringResource(R.string.epg_playing),
                                             )
                                         }
                                     },
@@ -156,7 +158,7 @@ fun LeanbackPanelIptvEpgDialog(
                                     onClick = { },
                                     headlineContent = {
                                         Text(
-                                            text = "当前频道暂无节目",
+                                            text = stringResource(R.string.epg_no_programme),
                                             maxLines = 1,
                                         )
                                     },

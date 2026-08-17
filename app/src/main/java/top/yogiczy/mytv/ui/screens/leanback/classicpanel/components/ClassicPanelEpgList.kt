@@ -31,6 +31,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,7 @@ import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.ListItemDefaults
 import kotlinx.coroutines.flow.distinctUntilChanged
 import top.yogiczy.mytv.data.entities.Epg
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.entities.EpgProgramme
 import top.yogiczy.mytv.data.entities.EpgProgramme.Companion.isLive
 import top.yogiczy.mytv.data.entities.EpgProgrammeList
@@ -186,7 +188,7 @@ private fun LeanbackClassicPanelEpgItem(
             },
             trailingContent = {
                 if (programme.isLive()) {
-                    Icon(Icons.Default.PlayArrow, contentDescription = "playing")
+                    Icon(Icons.Default.PlayArrow, contentDescription = stringResource(R.string.epg_playing))
                 }
             },
         )
@@ -242,9 +244,9 @@ private fun LeanbackClassicPanelEpgDayItem(
 
                     Text(
                         text = when (day) {
-                            today -> "今天"
-                            tomorrow -> "明天"
-                            dayAfterTomorrow -> "后天"
+                            today -> stringResource(R.string.classic_panel_today)
+                            tomorrow -> stringResource(R.string.classic_panel_tomorrow)
+                            dayAfterTomorrow -> stringResource(R.string.classic_panel_day_after_tomorrow)
                             else -> key[0]
                         },
                         modifier = Modifier.fillMaxWidth(),

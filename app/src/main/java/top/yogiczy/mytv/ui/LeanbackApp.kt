@@ -13,8 +13,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import top.yogiczy.mytv.R
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -40,7 +42,7 @@ fun LeanbackApp(
                 onBackPressed()
             } else {
                 doubleBackPressedExitState.backPress()
-                LeanbackToastState.I.showToast("再按一次退出")
+                LeanbackToastState.I.showToast(context.getString(R.string.main_exit_confirm))
             }
         },
     )

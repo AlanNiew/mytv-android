@@ -15,10 +15,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.material3.Icon
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.utils.Constants
 import top.yogiczy.mytv.ui.screens.leanback.components.LeanbackQrcodeDialog
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
@@ -35,14 +37,14 @@ fun LeanbackSettingsCategoryAbout(
     ) {
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "应用名称",
+                headlineContent = stringResource(R.string.settings_about_app_name),
                 trailingContent = Constants.APP_TITLE,
             )
         }
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "应用版本",
+                headlineContent = stringResource(R.string.settings_about_app_version),
                 trailingContent = packageInfo.versionName,
             )
         }
@@ -51,7 +53,7 @@ fun LeanbackSettingsCategoryAbout(
             var showQrDialog by remember { mutableStateOf(false) }
 
             LeanbackSettingsCategoryListItem(
-                headlineContent = "代码仓库",
+                headlineContent = stringResource(R.string.settings_about_repo),
                 trailingContent = {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -71,7 +73,7 @@ fun LeanbackSettingsCategoryAbout(
 
             LeanbackQrcodeDialog(
                 text = Constants.APP_REPO,
-                description = "扫码前往代码仓库",
+                description = stringResource(R.string.settings_about_scan_repo),
                 showDialogProvider = { showQrDialog },
                 onDismissRequest = { showQrDialog = false },
             )

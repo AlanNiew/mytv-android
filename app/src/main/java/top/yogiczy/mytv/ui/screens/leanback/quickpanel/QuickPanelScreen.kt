@@ -23,9 +23,12 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ButtonDefaults
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.entities.EpgProgrammeCurrent
 import top.yogiczy.mytv.data.entities.Iptv
 import top.yogiczy.mytv.data.utils.Constants
@@ -62,6 +65,7 @@ fun LeanbackQuickPanelScreen(
 ) {
     val childPadding = rememberLeanbackChildPadding()
     val focusRequester = remember { FocusRequester() }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -114,7 +118,7 @@ fun LeanbackQuickPanelScreen(
                     )
 
                     LeanbackQuickPanelButton(
-                        titleProvider = { "清除缓存" },
+                        titleProvider = { context.getString(R.string.quick_panel_clear_cache) },
                         onSelect = onClearCache,
                     )
 
@@ -124,7 +128,7 @@ fun LeanbackQuickPanelScreen(
                     )
 
                     LeanbackQuickPanelButton(
-                        titleProvider = { "更多设置" },
+                        titleProvider = { context.getString(R.string.quick_panel_more_settings) },
                         onSelect = onMoreSettings,
                     )
                 }
@@ -170,10 +174,11 @@ private fun LeanbackQuickPanelActionMultipleChannels(
     onIptvUrlIdxChange: (Int) -> Unit = {},
     onUserAction: () -> Unit = {},
 ) {
+    val context = LocalContext.current
     if (currentIptvProvider().urlList.size > 1) {
         var showChannelsDialog by remember { mutableStateOf(false) }
         LeanbackQuickPanelButton(
-            titleProvider = { "多线路" },
+            titleProvider = { context.getString(R.string.quick_panel_multi_channels) },
             onSelect = { showChannelsDialog = true },
         )
         LeanbackQuickPanelIptvChannelsDialog(
@@ -193,16 +198,20 @@ private fun LeanbackQuickPanelActionVideoAspectRatio(
     onChangeVideoPlayerAspectRatio: (Float) -> Unit = {},
 ) {
     val configuration = LocalConfiguration.current
+    val context = LocalContext.current
     val screenAspectRatio =
         configuration.screenWidthDp.toFloat() / configuration.screenHeightDp.toFloat()
     LeanbackQuickPanelButton(
         titleProvider = {
-            "画面比例 " + when (videoPlayerAspectRatioProvider()) {
-                16f / 9f -> "16:9"
-                4f / 3f -> "4:3"
-                screenAspectRatio -> "自动拉伸"
-                else -> "原始"
-            }
+            context.getString(
+                R.string.aspect_ratio_title,
+                when (videoPlayerAspectRatioProvider()) {
+                    16f / 9f -> context.getString(R.string.aspect_ratio_16_9)
+                    4f / 3f -> context.getString(R.string.aspect_ratio_4_3)
+                    screenAspectRatio -> context.getString(R.string.aspect_ratio_auto)
+                    else -> context.getString(R.string.aspect_ratio_original)
+                }
+            )
         },
         onSelect = {
             onChangeVideoPlayerAspectRatio(

@@ -9,8 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.DialogProperties
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.entities.GitRelease
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
 import top.yogiczy.mytv.ui.utils.handleLeanbackKeyEvents
@@ -44,7 +46,7 @@ fun LeanbackUpdateDialog(
                             onSelect = onUpdateAndInstall,
                         ),
                 ) {
-                    androidx.tv.material3.Text(text = "立即更新")
+                    androidx.tv.material3.Text(text = stringResource(R.string.update_now))
                 }
             },
             dismissButton = {
@@ -54,11 +56,11 @@ fun LeanbackUpdateDialog(
                         onSelect = onDismissRequest,
                     ),
                 ) {
-                    androidx.tv.material3.Text(text = "忽略")
+                    androidx.tv.material3.Text(text = stringResource(R.string.update_ignore))
                 }
             },
             title = {
-                Text(text = "新版本：v${release.version}")
+                Text(text = stringResource(R.string.update_new_version_title, release.version))
             },
             text = {
                 LazyColumn {

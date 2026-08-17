@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.ui.screens.leanback.settings.LeanbackSettingsViewModel
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
 
@@ -25,7 +27,7 @@ fun LeanbackSettingsCategoryFavorite(
     ) {
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "收藏启用",
+                headlineContent = stringResource(R.string.settings_favorite_enable),
                 trailingContent = {
                     Switch(
                         checked = settingsViewModel.iptvChannelFavoriteEnable,
@@ -44,16 +46,16 @@ fun LeanbackSettingsCategoryFavorite(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "当前已收藏",
-                supportingContent = "包括不存在直播源中的频道",
-                trailingContent = "${settingsViewModel.iptvChannelFavoriteList.size}个频道",
+                headlineContent = stringResource(R.string.settings_favorite_current),
+                supportingContent = stringResource(R.string.settings_favorite_current_desc),
+                trailingContent = stringResource(R.string.panel_channels_count, settingsViewModel.iptvChannelFavoriteList.size),
             )
         }
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "清空全部收藏",
-                supportingContent = "短按立即清空全部收藏",
+                headlineContent = stringResource(R.string.settings_favorite_clear),
+                supportingContent = stringResource(R.string.settings_favorite_clear_desc),
                 onSelected = {
                     settingsViewModel.iptvChannelFavoriteList = emptySet()
                     settingsViewModel.iptvChannelFavoriteListVisible = false

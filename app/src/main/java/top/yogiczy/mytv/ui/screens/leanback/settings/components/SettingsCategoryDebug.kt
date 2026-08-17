@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.ui.screens.leanback.settings.LeanbackSettingsViewModel
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
 
@@ -25,8 +27,8 @@ fun LeanbackSettingsCategoryDebug(
     ) {
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "显示FPS",
-                supportingContent = "在屏幕左上角显示fps和柱状图",
+                headlineContent = stringResource(R.string.settings_debug_show_fps),
+                supportingContent = stringResource(R.string.settings_debug_show_fps_desc),
                 trailingContent = {
                     Switch(checked = settingsViewModel.debugShowFps, onCheckedChange = null)
                 },
@@ -38,8 +40,8 @@ fun LeanbackSettingsCategoryDebug(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "显示播放器信息",
-                supportingContent = "显示播放器详细信息（编码、解码器、采样率等）",
+                headlineContent = stringResource(R.string.settings_debug_show_player_info),
+                supportingContent = stringResource(R.string.settings_debug_show_player_info_desc),
                 trailingContent = {
                     Switch(
                         checked = settingsViewModel.debugShowVideoPlayerMetadata,

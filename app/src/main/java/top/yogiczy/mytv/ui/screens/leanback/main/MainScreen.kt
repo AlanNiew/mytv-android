@@ -23,8 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import top.yogiczy.mytv.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.alexzhirkevich.qrose.options.QrBallShape
 import io.github.alexzhirkevich.qrose.options.QrFrameShape
@@ -79,7 +81,7 @@ private fun LeanbackMainScreenLoading(messageProvider: () -> String?) {
                 .padding(start = childPadding.start, bottom = childPadding.bottom),
         ) {
             Text(
-                text = "加载中...",
+                text = stringResource(R.string.common_loading),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onBackground,
             )
@@ -119,7 +121,7 @@ private fun LeanbackMainScreenError(
                 .padding(start = childPadding.start, bottom = childPadding.bottom),
         ) {
             Text(
-                text = "加载失败",
+                text = stringResource(R.string.common_loading_failed),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.error,
             )

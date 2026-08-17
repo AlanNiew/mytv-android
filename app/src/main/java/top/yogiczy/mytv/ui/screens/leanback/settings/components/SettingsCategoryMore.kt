@@ -13,10 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import kotlinx.coroutines.delay
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.ui.screens.leanback.components.LeanbackQrcode
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
 import top.yogiczy.mytv.ui.utils.HttpServer
@@ -33,7 +35,7 @@ fun LeanbackSettingsCategoryMore(
     ) {
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "设置页面",
+                headlineContent = stringResource(R.string.settings_more_page),
                 trailingContent = serverUrl,
             )
         }

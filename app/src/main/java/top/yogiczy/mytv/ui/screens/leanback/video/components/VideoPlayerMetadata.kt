@@ -11,8 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.ui.screens.leanback.video.player.LeanbackVideoPlayer
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
 
@@ -35,24 +37,24 @@ fun LeanbackVideoPlayerMetadata(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Column {
-                Text("视频", style = MaterialTheme.typography.bodyMedium)
+                Text(stringResource(R.string.video_metadata_video), style = MaterialTheme.typography.bodyMedium)
                 Column(modifier = Modifier.padding(start = 10.dp)) {
-                    Text("编码: ${metadata.videoMimeType}")
-                    Text("解码器: ${metadata.videoDecoder}")
-                    Text("分辨率: ${metadata.videoWidth}x${metadata.videoHeight}")
-                    Text("色彩: ${metadata.videoColor}")
-                    Text("帧率: ${metadata.videoFrameRate}")
-                    Text("比特率: ${metadata.videoBitrate / 1024} kbps")
+                    Text(stringResource(R.string.video_metadata_codec, metadata.videoMimeType))
+                    Text(stringResource(R.string.video_metadata_decoder, metadata.videoDecoder))
+                    Text(stringResource(R.string.video_metadata_resolution, metadata.videoWidth, metadata.videoHeight))
+                    Text(stringResource(R.string.video_metadata_color, metadata.videoColor))
+                    Text(stringResource(R.string.video_metadata_frame_rate, metadata.videoFrameRate))
+                    Text(stringResource(R.string.video_metadata_bitrate, metadata.videoBitrate / 1024))
                 }
             }
 
             Column {
-                Text("音频", style = MaterialTheme.typography.bodyMedium)
+                Text(stringResource(R.string.video_metadata_audio), style = MaterialTheme.typography.bodyMedium)
                 Column(modifier = Modifier.padding(start = 10.dp)) {
-                    Text("编码: ${metadata.audioMimeType}")
-                    Text("解码器: ${metadata.audioDecoder}")
-                    Text("声道数: ${metadata.audioChannels}")
-                    Text("采样率: ${metadata.audioSampleRate} Hz")
+                    Text(stringResource(R.string.video_metadata_codec, metadata.audioMimeType))
+                    Text(stringResource(R.string.video_metadata_decoder, metadata.audioDecoder))
+                    Text(stringResource(R.string.video_metadata_channels, metadata.audioChannels))
+                    Text(stringResource(R.string.video_metadata_sample_rate, metadata.audioSampleRate))
                 }
             }
         }

@@ -31,6 +31,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.foundation.lazy.list.TvLazyColumn
@@ -42,6 +43,7 @@ import top.yogiczy.mytv.data.entities.EpgList
 import top.yogiczy.mytv.data.entities.EpgList.Companion.currentProgrammes
 import top.yogiczy.mytv.data.entities.EpgProgramme.Companion.progress
 import top.yogiczy.mytv.data.entities.EpgProgrammeCurrent
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.data.entities.Iptv
 import top.yogiczy.mytv.data.entities.IptvGroup
 import top.yogiczy.mytv.data.entities.IptvList
@@ -214,7 +216,7 @@ private fun LeanbackClassicPanelIptvItem(
                 },
                 supportingContent = {
                     Text(
-                        text = currentProgramme?.title ?: "无节目",
+                        text = currentProgramme?.title ?: stringResource(R.string.common_no_programme),
                         style = MaterialTheme.typography.labelMedium,
                         maxLines = 1,
                         modifier = Modifier.alpha(0.8f),

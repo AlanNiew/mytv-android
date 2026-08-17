@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
+import top.yogiczy.mytv.R
 import top.yogiczy.mytv.ui.screens.leanback.settings.LeanbackSettingsViewModel
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
 import top.yogiczy.mytv.ui.utils.SP
@@ -28,12 +30,12 @@ fun LeanbackSettingsCategoryVideoPlayer(
     ) {
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "全局画面比例",
+                headlineContent = stringResource(R.string.settings_video_player_aspect_ratio),
                 trailingContent = when (settingsViewModel.videoPlayerAspectRatio) {
-                    SP.VideoPlayerAspectRatio.ORIGINAL -> "原始"
-                    SP.VideoPlayerAspectRatio.SIXTEEN_NINE -> "16:9"
-                    SP.VideoPlayerAspectRatio.FOUR_THREE -> "4:3"
-                    SP.VideoPlayerAspectRatio.AUTO -> "自动拉伸"
+                    SP.VideoPlayerAspectRatio.ORIGINAL -> stringResource(R.string.aspect_ratio_original)
+                    SP.VideoPlayerAspectRatio.SIXTEEN_NINE -> stringResource(R.string.aspect_ratio_16_9)
+                    SP.VideoPlayerAspectRatio.FOUR_THREE -> stringResource(R.string.aspect_ratio_4_3)
+                    SP.VideoPlayerAspectRatio.AUTO -> stringResource(R.string.aspect_ratio_auto)
                 },
                 onSelected = {
                     settingsViewModel.videoPlayerAspectRatio =
@@ -51,8 +53,8 @@ fun LeanbackSettingsCategoryVideoPlayer(
             val step = 1000 * 5L
 
             LeanbackSettingsCategoryListItem(
-                headlineContent = "播放器加载超时",
-                supportingContent = "影响超时换源、断线重连",
+                headlineContent = stringResource(R.string.settings_video_player_load_timeout),
+                supportingContent = stringResource(R.string.settings_video_player_load_timeout_desc),
                 trailingContent = settingsViewModel.videoPlayerLoadTimeout.humanizeMs(),
                 onSelected = {
                     settingsViewModel.videoPlayerLoadTimeout =
@@ -63,7 +65,7 @@ fun LeanbackSettingsCategoryVideoPlayer(
 
         item {
             LeanbackSettingsCategoryListItem(
-                headlineContent = "播放器自定义UA",
+                headlineContent = stringResource(R.string.settings_video_player_user_agent),
                 supportingContent = settingsViewModel.videoPlayerUserAgent,
                 remoteConfig = true,
             )
