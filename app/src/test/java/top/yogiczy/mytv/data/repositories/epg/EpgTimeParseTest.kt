@@ -51,4 +51,21 @@ class EpgTimeParseTest {
     fun 非法格式返回零() {
         assertEquals(0L, parseEpgTime("not-a-valid-time-string!"))
     }
+
+    @Test
+    fun 非整小时时区偏移() {
+        // UTC+5:30 时区 12:00 = UTC 06:30
+        assertEquals(1630996200000L, parseEpgTime("20210907120000 +0530"))
+    }
+
+    @Test
+    fun 冒号分隔时区偏移() {
+        assertEquals(1630987200000L, parseEpgTime("20210907120000 +08:00"))
+    }
+
+    @Test
+    fun 无法识别的偏移返回零() {
+        assertEquals(0L, parseEpgTime("20210907120000 +ab:cd"))
+        assertEquals(0L, parseEpgTime("20210907120000 +2600"))
+    }
 }
