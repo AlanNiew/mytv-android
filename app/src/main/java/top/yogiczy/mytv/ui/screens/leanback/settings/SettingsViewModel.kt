@@ -26,6 +26,22 @@ class LeanbackSettingsViewModel : ViewModel() {
             SP.appLastLatestVersion = value
         }
 
+    private var _appLastUpdateCheckTime by mutableLongStateOf(SP.appLastUpdateCheckTime)
+    var appLastUpdateCheckTime: Long
+        get() = _appLastUpdateCheckTime
+        set(value) {
+            _appLastUpdateCheckTime = value
+            SP.appLastUpdateCheckTime = value
+        }
+
+    private var _httpTrustAllCertificates by mutableStateOf(SP.httpTrustAllCertificates)
+    var httpTrustAllCertificates: Boolean
+        get() = _httpTrustAllCertificates
+        set(value) {
+            _httpTrustAllCertificates = value
+            SP.httpTrustAllCertificates = value
+        }
+
     private var _appDeviceDisplayType by mutableStateOf(SP.appDeviceDisplayType)
     var appDeviceDisplayType: SP.AppDeviceDisplayType
         get() = _appDeviceDisplayType

@@ -14,6 +14,13 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+// 版本号支持由 CI 环境变量注入(见 release.yml),本地构建回退占位符
+val versionCodeValue = (System.getenv("VERSION_CODE")
+    ?: keystoreProperties.getProperty("versionCode"))?.toIntOrNull() ?: 1
+val versionNameValue = System.getenv("VERSION_NAME")
+    ?: keystoreProperties.getProperty("versionName")
+    ?: "1.0"
+
 android {
     namespace = "top.yogiczy.mytv"
     compileSdk = 34
@@ -22,8 +29,8 @@ android {
         applicationId = "top.yogiczy.mytv"
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = versionCodeValue
+        versionName = versionNameValue
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -54,6 +61,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    testOptions {
+        // JVM 单测中未 mock 的 android.*(如 Log) 返回默认值而非抛异常
+        unitTests.isReturnDefaultValues = true
     }
     packaging {
         resources {

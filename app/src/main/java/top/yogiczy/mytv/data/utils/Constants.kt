@@ -71,6 +71,11 @@ object Constants {
     const val VIDEO_PLAYER_LOAD_TIMEOUT = 1000L * 15 // 15秒
 
     /**
+     * 更新检查最小间隔(毫秒)
+     */
+    const val UPDATE_CHECK_INTERVAL = 1000L * 60 * 60 * 6 // 6小时
+
+    /**
      * 界面 超时未操作自动关闭界面
      */
     const val UI_SCREEN_AUTO_CLOSE_DELAY = 1000L * 15 // 15秒

@@ -28,12 +28,18 @@ object SP {
         /** 上一次最新版本 */
         APP_LAST_LATEST_VERSION,
 
+        /** 上一次检查更新的时间戳 */
+        APP_LAST_UPDATE_CHECK_TIME,
+
         /** 设备显示类型 */
         APP_DEVICE_DISPLAY_TYPE,
 
         /** ==================== HTTP 服务 ==================== */
         /** 连接令牌(局域网远程设置鉴权) */
         HTTP_TOKEN,
+
+        /** 信任所有HTTPS证书(危险开关) */
+        HTTP_TRUST_ALL_CERTIFICATES,
 
         /** ==================== 调式 ==================== */
         /** 显示fps */
@@ -134,6 +140,11 @@ object SP {
         get() = sp.getString(KEY.APP_LAST_LATEST_VERSION.name, "")!!
         set(value) = sp.edit().putString(KEY.APP_LAST_LATEST_VERSION.name, value).apply()
 
+    /** 上一次检查更新的时间戳 */
+    var appLastUpdateCheckTime: Long
+        get() = sp.getLong(KEY.APP_LAST_UPDATE_CHECK_TIME.name, 0)
+        set(value) = sp.edit().putLong(KEY.APP_LAST_UPDATE_CHECK_TIME.name, value).apply()
+
     /** 设备显示类型 */
     var appDeviceDisplayType: AppDeviceDisplayType
         get() = AppDeviceDisplayType.fromValue(sp.getInt(KEY.APP_DEVICE_DISPLAY_TYPE.name, 0))
@@ -157,6 +168,11 @@ object SP {
         SecureRandom().nextBytes(bytes)
         return bytes.joinToString("") { "%02x".format(it) }
     }
+
+    /** 信任所有HTTPS证书(默认关闭,仅影响 HttpsURLConnection 栈) */
+    var httpTrustAllCertificates: Boolean
+        get() = sp.getBoolean(KEY.HTTP_TRUST_ALL_CERTIFICATES.name, false)
+        set(value) = sp.edit().putBoolean(KEY.HTTP_TRUST_ALL_CERTIFICATES.name, value).apply()
 
     /** ==================== 调式 ==================== */
     /** 显示fps */

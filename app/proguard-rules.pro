@@ -1,21 +1,23 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# ==================== kotlinx.serialization ====================
+# 序列化生成的 $serializer 类与 Companion.serializer() 需要保留,否则 release 反序列化崩溃
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt
+-keep,includedescriptorclasses class top.yogiczy.mytv.**$$serializer { *; }
+-keepclassmembers class top.yogiczy.mytv.** {
+    *** Companion;
+}
+-keepclasseswithmembers class top.yogiczy.mytv.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# ==================== androidasync(内嵌 HTTP 设置服务器) ====================
+# AsyncHttpServer 通过反射注册路由回调
+-keep class com.koushikdutta.async.** { *; }
+-dontwarn com.koushikdutta.async.**
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# ==================== Media3 扩展渲染器(ffmpeg 软解,反射加载) ====================
+-keep class androidx.media3.decoder.** { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# ==================== 调试信息 ====================
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile

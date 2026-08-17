@@ -19,6 +19,10 @@ jobs:
           distribution: "zulu"
           java-version: "17"
 
+      - name: 获取版本号
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >>$GITHUB_OUTPUT
+
       - name: 解码生成 jks
         run: echo $KEYSTORE_BASE64 | base64 -di > app/keystore.jks
         env:
@@ -26,15 +30,13 @@ jobs:
 
       - name: 生成apk
         run: chmod +x ./gradlew && ./gradlew assembleRelease
-
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD}}
-
-      - name: 获取版本号
-        id: version
-        run: echo "version=${GITHUB_REF#refs/tags/v}" >>$GITHUB_OUTPUT
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          # 注入包内版本号,替代占位符 1.0(1)
+          VERSION_NAME: ${{ steps.version.outputs.version }}
+          VERSION_CODE: ${{ github.run_number }}
 
       - name: 重命名应用
         run: |
