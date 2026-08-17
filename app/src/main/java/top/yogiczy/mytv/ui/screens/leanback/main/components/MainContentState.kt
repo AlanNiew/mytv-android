@@ -62,6 +62,9 @@ class LeanbackMainContentState(
             _isQuickPanelVisible = value
         }
 
+    /** 断流重试标记:记录上次断流重试的 URL,同一 URL 断流两次则切换下一线路 */
+    private var cutoffRetryUrl: String? = null
+
     init {
         changeCurrentIptv(iptvGroupList.iptvList.getOrElse(SP.iptvLastIptvIdx) {
             iptvGroupList.firstOrNull()?.iptvList?.firstOrNull() ?: Iptv()
@@ -91,7 +94,7 @@ class LeanbackMainContentState(
         }
 
         videoPlayerState.onCutoff {
-            changeCurrentIptv(_currentIptv, _currentIptvUrlIdx)
+            retryOrAdvanceOnCutoff()
         }
     }
 
@@ -114,6 +117,26 @@ class LeanbackMainContentState(
 
         if (iptv == _currentIptv && urlIdx == null) return
 
+        // 频道无任何播放地址时直接跳过,避免 urlList[0] 下标越界崩溃
+        if (iptv.urlList.isEmpty()) {
+            log.w("频道无可播放地址: ${iptv.name}")
+            return
+        }
+
+        val targetUrlIdx = if (urlIdx == null) {
+            // 优先从记忆中选择可播放的域名
+            max(0, iptv.urlList.indexOfFirst {
+                SP.iptvPlayableHostList.contains(getUrlHost(it))
+            })
+        } else {
+            (urlIdx + iptv.urlList.size) % iptv.urlList.size
+        }
+
+        // 换频道/手动换源时重置断流重试计数
+        if (iptv != _currentIptv || targetUrlIdx != _currentIptvUrlIdx) {
+            cutoffRetryUrl = null
+        }
+
         if (iptv == _currentIptv && urlIdx != _currentIptvUrlIdx) {
             SP.iptvPlayableHostList -= getUrlHost(_currentIptv.urlList[_currentIptvUrlIdx])
         }
@@ -123,19 +146,32 @@ class LeanbackMainContentState(
         _currentIptv = iptv
         SP.iptvLastIptvIdx = iptvGroupList.iptvIdx(_currentIptv)
 
-        _currentIptvUrlIdx = if (urlIdx == null) {
-            // 优先从记忆中选择可播放的域名
-            max(0, _currentIptv.urlList.indexOfFirst {
-                SP.iptvPlayableHostList.contains(getUrlHost(it))
-            })
-        } else {
-            (urlIdx + _currentIptv.urlList.size) % _currentIptv.urlList.size
-        }
+        _currentIptvUrlIdx = targetUrlIdx
 
         val url = iptv.urlList[_currentIptvUrlIdx]
         log.d("播放${iptv.name}（${_currentIptvUrlIdx + 1}/${_currentIptv.urlList.size}）: $url")
 
         videoPlayerState.prepare(url)
+    }
+
+    /**
+     * 断流(播放位置长时间无变化)处理:
+     * 同一线路先重试一次,仍断流则自动切换至下一线路;已是最后一条线路则保持重试
+     */
+    private fun retryOrAdvanceOnCutoff() {
+        val url = _currentIptv.urlList.getOrNull(_currentIptvUrlIdx) ?: return
+
+        if (cutoffRetryUrl == url) {
+            cutoffRetryUrl = null
+            if (_currentIptvUrlIdx < _currentIptv.urlList.size - 1) {
+                changeCurrentIptv(_currentIptv, _currentIptvUrlIdx + 1)
+            } else {
+                changeCurrentIptv(_currentIptv, _currentIptvUrlIdx)
+            }
+        } else {
+            cutoffRetryUrl = url
+            changeCurrentIptv(_currentIptv, _currentIptvUrlIdx)
+        }
     }
 
     fun changeCurrentIptvToPrev() {

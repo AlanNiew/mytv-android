@@ -25,14 +25,20 @@ class TvboxIptvParser : IptvParser {
                 val res = line.replace("，", ",").split(",")
                 if (res.size < 2) return@forEach
 
-                iptvList.addAll(res[1].split("#").map { url ->
-                    IptvResponseItem(
-                        name = res[0].trim(),
-                        channelName = res[0].trim(),
-                        groupName = groupName?.trim() ?: "其他",
-                        url = url.trim(),
-                    )
-                })
+                iptvList.addAll(
+                    res[1].split("#")
+                        .map { it.trim() }
+                        // 过滤空 URL,避免产生无可播放地址的频道
+                        .filter { it.isNotBlank() }
+                        .map { url ->
+                            IptvResponseItem(
+                                name = res[0].trim(),
+                                channelName = res[0].trim(),
+                                groupName = groupName?.trim() ?: "其他",
+                                url = url,
+                            )
+                        }
+                )
             }
         }
 

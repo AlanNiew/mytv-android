@@ -22,12 +22,16 @@ class M3uIptvParser : IptvParser {
             val channelName = Regex("tvg-name=\"(.+?)\"").find(line)?.groupValues?.get(1) ?: name
             val groupName = Regex("group-title=\"(.+?)\"").find(line)?.groupValues?.get(1) ?: "其他"
 
+            // 防止 #EXTINF 位于文件末尾(后方无 URL 行)时越界;空 URL 行直接跳过
+            val url = lines.getOrElse(index + 1) { "" }.trim()
+            if (url.isBlank()) return@forEachIndexed
+
             iptvList.add(
                 IptvResponseItem(
                     name = name.trim(),
                     channelName = channelName.trim(),
                     groupName = groupName.trim(),
-                    url = lines[index + 1].trim(),
+                    url = url,
                 )
             )
         }

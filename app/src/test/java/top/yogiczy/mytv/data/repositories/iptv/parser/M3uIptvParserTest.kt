@@ -133,4 +133,37 @@ class M3uIptvParserTest {
 
         assertEquals(0, result.size)
     }
+
+    @Test
+    fun `parse skips trailing EXTINF line without url`() = runBlocking {
+        // 文件以 #EXTINF 结尾、后方无 URL 行时不应越界崩溃
+        val data = """
+            #EXTM3U
+            #EXTINF:-1 tvg-name="cctv1" group-title="央视",CCTV-1
+            http://a/cctv1.m3u8
+            #EXTINF:-1 tvg-name="cctv2" group-title="央视",CCTV-2
+        """.trimIndent()
+
+        val result = parser.parse(data)
+
+        assertEquals(1, result.size)
+        assertEquals(1, result[0].iptvList.size)
+        assertEquals("CCTV-1", result[0].iptvList[0].name)
+    }
+
+    @Test
+    fun `parse skips EXTINF with blank url line`() = runBlocking {
+        val data = """
+            #EXTM3U
+            #EXTINF:-1 tvg-name="cctv1" group-title="央视",CCTV-1
+
+            #EXTINF:-1 tvg-name="cctv2" group-title="央视",CCTV-2
+            http://a/cctv2.m3u8
+        """.trimIndent()
+
+        val result = parser.parse(data)
+
+        assertEquals(1, result[0].iptvList.size)
+        assertEquals("CCTV-2", result[0].iptvList[0].name)
+    }
 }

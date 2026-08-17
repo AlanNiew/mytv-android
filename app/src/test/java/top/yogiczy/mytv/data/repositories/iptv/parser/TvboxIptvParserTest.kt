@@ -137,4 +137,19 @@ class TvboxIptvParserTest {
         assertEquals(1, result[0].iptvList.size)
         assertEquals("CCTV-1", result[0].iptvList[0].name)
     }
+
+    @Test
+    fun `parse skips blank url after split`() = runBlocking {
+        // 频道行只有名称、地址为空时不应产生空 URL 条目
+        val data = """
+            央视,#genre#
+            CCTV-1,
+            CCTV-2,http://a/cctv2
+        """.trimIndent()
+
+        val result = parser.parse(data)
+
+        assertEquals(1, result[0].iptvList.size)
+        assertEquals("CCTV-2", result[0].iptvList[0].name)
+    }
 }
