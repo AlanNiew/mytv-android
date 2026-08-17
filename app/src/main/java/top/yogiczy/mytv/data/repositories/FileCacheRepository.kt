@@ -1,6 +1,8 @@
 package top.yogiczy.mytv.data.repositories
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import top.yogiczy.mytv.AppGlobal
 import java.io.File
@@ -11,6 +13,9 @@ import java.io.File
 abstract class FileCacheRepository(
     private val fileName: String,
 ) {
+    /** 防止并发刷新时重复拉取网络/双写缓存文件 */
+    private val mutex = Mutex()
+
     private fun getCacheFile() = File(AppGlobal.cacheDir, fileName)
 
     private suspend fun getCacheData(): String? = withContext(Dispatchers.IO) {
@@ -21,7 +26,11 @@ abstract class FileCacheRepository(
 
     private suspend fun setCacheData(data: String) = withContext(Dispatchers.IO) {
         val file = getCacheFile()
-        file.writeText(data)
+        // 先写临时文件再原子重命名,避免写一半崩溃留下损坏缓存
+        val tmpFile = File(file.parentFile, "${file.name}.tmp")
+        tmpFile.writeText(data)
+        if (file.exists()) file.delete()
+        tmpFile.renameTo(file)
     }
 
     protected suspend fun getOrRefresh(cacheTime: Long, refreshOp: suspend () -> String): String {
@@ -42,7 +51,7 @@ abstract class FileCacheRepository(
     protected suspend fun getOrRefresh(
         isExpired: (lastModified: Long, cacheData: String?) -> Boolean,
         refreshOp: suspend () -> String,
-    ): String {
+    ): String = mutex.withLock {
         var data = getCacheData()
 
         if (isExpired(getCacheFile().lastModified(), data)) {
@@ -54,6 +63,6 @@ abstract class FileCacheRepository(
             setCacheData(data)
         }
 
-        return data
+        data
     }
 }

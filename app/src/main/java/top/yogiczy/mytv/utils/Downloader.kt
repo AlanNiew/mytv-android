@@ -25,13 +25,13 @@ object Downloader : Loggable() {
             val request = okhttp3.Request.Builder().url(url).build()
 
             try {
-                with(client.newCall(request).execute()) {
-                    if (!isSuccessful) {
-                        throw Exception("下载文件失败: $code")
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        throw Exception("下载文件失败: ${response.code}")
                     }
 
                     val file = File(filePath)
-                    FileOutputStream(file).use { fos -> fos.write(body!!.bytes()) }
+                    FileOutputStream(file).use { fos -> fos.write(response.body!!.bytes()) }
                 }
             } catch (ex: Exception) {
                 log.e("下载文件失败", ex)
@@ -54,8 +54,11 @@ object Downloader : Loggable() {
                 override fun read(sink: okio.Buffer, byteCount: Long): Long {
                     val bytesRead = super.read(sink, byteCount)
                     totalBytesRead += if (bytesRead != -1L) bytesRead else 0
-                    val progress = (totalBytesRead * 100 / contentLength()).toInt()
-                    onProgressCb?.invoke(progress)
+                    // 服务器未返回 Content-Length(为 -1/0)时跳过进度回调,避免除零或负进度
+                    val total = contentLength()
+                    if (total > 0) {
+                        onProgressCb?.invoke((totalBytesRead * 100 / total).toInt())
+                    }
                     return bytesRead
                 }
             }.buffer()

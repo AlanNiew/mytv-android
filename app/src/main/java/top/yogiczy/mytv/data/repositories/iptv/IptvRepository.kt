@@ -27,12 +27,12 @@ class IptvRepository : FileCacheRepository("iptv.txt") {
         val request = Request.Builder().url(sourceUrl).build()
 
         try {
-            with(OkHttpClientProvider.client.newCall(request).execute()) {
-                if (!isSuccessful) {
-                    throw Exception("获取远程直播源失败: $code")
+            OkHttpClientProvider.client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    throw Exception("获取远程直播源失败: ${response.code}")
                 }
 
-                return@with body!!.string()
+                return@withContext response.body!!.string()
             }
         } catch (ex: Exception) {
             log.e("获取远程直播源失败", ex)
