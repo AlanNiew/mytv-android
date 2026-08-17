@@ -1,6 +1,7 @@
 package top.yogiczy.mytv.activities
 
 import android.app.PictureInPictureParams
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.util.Rational
@@ -21,24 +22,29 @@ import top.yogiczy.mytv.ui.screens.leanback.toast.LeanbackToastState
 import top.yogiczy.mytv.ui.theme.LeanbackTheme
 import top.yogiczy.mytv.ui.utils.HttpServer
 import top.yogiczy.mytv.ui.utils.SP
-import kotlin.system.exitProcess
 
 class LeanbackActivity : ComponentActivity() {
     override fun onUserLeaveHint() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         if (!SP.uiPipMode) return
 
-        enterPictureInPictureMode(
-            PictureInPictureParams.Builder()
-                .setAspectRatio(Rational(16, 9))
-                .build()
-        )
+        val paramsBuilder = PictureInPictureParams.Builder()
+            .setAspectRatio(Rational(16, 9))
+
+        // Android 12+ 设置进入 PiP 动画的源区域,过渡更平滑
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val rootView = window.decorView.rootView
+            paramsBuilder.setSourceRectHint(Rect(0, 0, rootView.width, rootView.height))
+        }
+
+        enterPictureInPictureMode(paramsBuilder.build())
         super.onUserLeaveHint()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             // 隐藏状态栏、导航栏
             WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -60,8 +66,8 @@ class LeanbackActivity : ComponentActivity() {
                 ) {
                     LeanbackApp(
                         onBackPressed = {
+                            // 正常关闭 Activity,由系统回收进程;不再强杀进程以保留清理流程
                             finish()
-                            exitProcess(0)
                         },
                     )
                 }

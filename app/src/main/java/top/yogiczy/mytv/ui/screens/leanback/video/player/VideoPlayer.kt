@@ -16,6 +16,9 @@ abstract class LeanbackVideoPlayer(
     private var cutoffTimeoutJob: Job? = null
     private var currentPosition = -1L
 
+    /** 暂停状态:暂停期间不启动/触发加载超时与断流检测 */
+    private var isPaused = false
+
     protected var metadata = Metadata()
 
     open fun initialize() {
@@ -23,14 +26,26 @@ abstract class LeanbackVideoPlayer(
     }
 
     open fun release() {
+        loadTimeoutJob?.cancel()
+        loadTimeoutJob = null
+        cutoffTimeoutJob?.cancel()
+        cutoffTimeoutJob = null
         clearAllListeners()
     }
 
     abstract fun prepare(url: String)
 
-    abstract fun play()
+    open fun play() {
+        isPaused = false
+    }
 
-    abstract fun pause()
+    open fun pause() {
+        isPaused = true
+        loadTimeoutJob?.cancel()
+        loadTimeoutJob = null
+        cutoffTimeoutJob?.cancel()
+        cutoffTimeoutJob = null
+    }
 
     abstract fun setVideoSurfaceView(surfaceView: SurfaceView)
 
@@ -57,6 +72,8 @@ abstract class LeanbackVideoPlayer(
     }
 
     protected fun triggerError(error: PlaybackException?) {
+        // 暂停期间忽略加载超时,避免暂停/切后台被误判为播放失败
+        if (isPaused && error == PlaybackException.LOAD_TIMEOUT) return
         onErrorListeners.forEach { it(error) }
         if(error != PlaybackException.LOAD_TIMEOUT) {
             loadTimeoutJob?.cancel()
@@ -91,9 +108,13 @@ abstract class LeanbackVideoPlayer(
     protected fun triggerCurrentPosition(newPosition: Long) {
         if (currentPosition != newPosition) {
             cutoffTimeoutJob?.cancel()
-            cutoffTimeoutJob = coroutineScope.launch {
-                delay(SP.videoPlayerLoadTimeout)
-                onCutoffListeners.forEach { it() }
+            cutoffTimeoutJob = null
+            // 暂停期间不启动断流检测,恢复播放后重新计时
+            if (!isPaused) {
+                cutoffTimeoutJob = coroutineScope.launch {
+                    delay(SP.videoPlayerLoadTimeout)
+                    onCutoffListeners.forEach { it() }
+                }
             }
         }
         currentPosition = newPosition

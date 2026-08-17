@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.view.SurfaceView
 import androidx.annotation.OptIn
+import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
@@ -39,6 +40,15 @@ class LeanbackMedia3VideoPlayer(
         DefaultRenderersFactory(context).setExtensionRendererMode(EXTENSION_RENDERER_MODE_ON)
     ).build().apply {
         playWhenReady = true
+        setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(C.USAGE_MEDIA)
+                .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                .build(),
+            true
+        )
+        setWakeMode(C.WAKE_MODE_NETWORK)
+        setHandleAudioBecomingNoisy(true)
     }
 
     private val contentTypeAttempts = mutableMapOf<Int, Boolean>()
@@ -109,8 +119,8 @@ class LeanbackMedia3VideoPlayer(
                         prepare(uri, C.CONTENT_TYPE_HLS)
                     } else if (contentTypeAttempts[C.CONTENT_TYPE_OTHER] != true) {
                         prepare(uri, C.CONTENT_TYPE_OTHER)
-                    } else if (contentTypeAttempts[C.CONTENT_TYPE_OTHER] != true) {
-                        prepare(uri, C.CONTENT_TYPE_OTHER)
+                    } else if (contentTypeAttempts[C.CONTENT_TYPE_RTSP] != true) {
+                        prepare(uri, C.CONTENT_TYPE_RTSP)
                     } else {
                         triggerError(PlaybackException.UNSUPPORTED_TYPE)
                     }
@@ -207,6 +217,8 @@ class LeanbackMedia3VideoPlayer(
     }
 
     override fun release() {
+        updatePositionJob?.cancel()
+        updatePositionJob = null
         videoPlayer.removeListener(playerListener)
         videoPlayer.removeAnalyticsListener(metadataListener)
         videoPlayer.removeAnalyticsListener(eventLogger)
@@ -221,10 +233,12 @@ class LeanbackMedia3VideoPlayer(
     }
 
     override fun play() {
+        super.play()
         videoPlayer.play()
     }
 
     override fun pause() {
+        super.pause()
         videoPlayer.pause()
     }
 
